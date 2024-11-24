@@ -1,0 +1,58 @@
+services:
+
+  wordpress:
+    image: wordpress
+    container_name: wordpress
+    restart: always
+    ports:
+      - 8800:80
+      - 4433:443
+    environment:
+      WORDPRESS_DB_HOST: mysql
+      WORDPRESS_DB_USER: wp-user
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DB_NAME: wordpress_esgi
+    volumes:
+      - wordpress:/var/www/html
+    networks:
+      - backnet
+      - bdd
+      - frontnet
+
+  mysql:
+    image: mysql:latest
+    container_name: mysql
+    restart: always
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_DATABASE: wordpress_esgi
+      MYSQL_USER: wp-user
+      MYSQL_PASSWORD: wordpress
+      MYSQL_RANDOM_ROOT_PASSWORD: '1'
+    volumes:
+      - mysql:/var/lib/mysql
+    networks:
+      - bdd
+
+  nginx:
+    image: jc21/nginx-proxy-manager:latest
+    restart: always
+    ports:
+      - 8008:80
+      - 8181:81
+      - 4443:443
+    volumes:
+      - /docker/nginx/data:/data
+      - /docker/nginx/letsencrypt:/etc/letsencrypt
+    networks:
+      - frontnet
+
+volumes:
+  wordpress:
+  mysql:
+
+networks:
+  bdd:
+  frontnet:
+  backnet:
