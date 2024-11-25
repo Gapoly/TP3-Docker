@@ -43,14 +43,16 @@ services:
       - 8181:81
       - 4443:443
     volumes:
-      - /docker/nginx/data:/data
-      - /docker/nginx/letsencrypt:/etc/letsencrypt
+      - nginx-data:/data
+      - nginx-tls:/etc/letsencrypt
     networks:
       - frontnet
 
 volumes:
   wordpress:
   mysql:
+  nginx-data:
+  nginx-tls:
 
 networks:
   bdd:
