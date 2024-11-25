@@ -75,7 +75,7 @@ Nginx Proxy Manager (NPM) est un proxy inverse doté d'une interface web pour g�
 <br>
 
 - **Réseau :** frontend
-- **Volumes :** /docker/nginx/data:/data - /docker/nginx/letsencrypt:/etc/letsencrypt
+- **Volumes :** nginx-data:/data - nginx-tls:/etc/letsencrypt
 - **Ports :** Interface HTTP 8181:81 - Redirection HTTP 8008:80 - Redirection HTTPS 4443:443
 
 ## 0.4 Finalité
@@ -98,4 +98,111 @@ Comme dit précedemment, le réseau sera coupé en trois pour chaque service. Le
 - **Wordpress :** frontnet, backnet, bdd
 - **NPM :** frontnet
 - **MySQL :** bdd
+
+Pourquoi j'ai décidé de mettre Wordpress dans les trois réseaux? Docker marche un peu différement comparé à un réseau normal. Admettons, je suis dans un réseau avec plusieurs VLAN, je fairais une règle pour que les VLAN puissent parler entre eux, or en Docker ce n'est pas possible. Les réseaux ne peuvent pas communiquer entre eux, du coup je suis obliger de mettre Wordpress dans plusieurs réseaux pour qu'ils puissent parler aux autres.
+
+Voici comment je l'ai appliquer :
+
+```yaml
+services:
+
+    wordpress:
+        networks:
+            - backnet
+            - bdd
+            - frontnet
+
+    mysql:
+        networks:
+            - bdd
+
+    nginx:
+        networks:
+            - frontnet
+
+networks:
+  bdd:
+  frontnet:
+  backnet:
+```
+
+# 🧳 2. Les volumes
+
+Les volumes sont extremement important dans Docker pour assurer la continuité des services. Elles permettent de garder nos données si un de nos conteneurs venaient à tomber.
+
+J'ai fait en sorte que chaque conteneurs garde les données importantes pour mettre en place la continuité des services :
+
+```yaml
+services:
+
+    wordpress:
+        volumes:
+            - wordpress:/var/www/html
+
+    mysql:
+        volumes:
+            - mysql:/var/lib/mysql
+    nginx:
+        volumes:
+            - nginx-data:/data
+            - nginx-tls:/etc/letsencrypt
+
+volumes:
+  wordpress:
+  mysql:
+  nginx-data:
+  nginx-tls:
+```
+
+# 🛥️ 3. Les ports
+
+Par défaut dans un containeur Docker, les ports sont fermés. Il faut ajouter un paramétre dans notre fichier *.yml pour qu'il ouvre les ports dont on a besoin pour que les containeurs puissent bien communiquer entre eux.
+
+Chaque containeur ont besoin de ports spécifiques, précisez dans la doc officiel. Certains protocole dont a besoin utilisent les mêmes ports entre eux. On va faire en sorte qu'il n'y ai pas de conflit de ports :
+
+```yaml
+services:
+
+    wordpress:
+        ports:
+            - 8800:80 # HTTP
+            - 4433:443 # HTTPS
+
+    mysql:
+        ports:
+            - 3306:336 # MySQL - Base de données
+    nginx:
+        ports:
+            - 8008:80 # Redirection HTTP
+            - 4443:443 # Redirection HTTPS
+            - 8181:81 # HTTP - Interface Admin web        
+```
+
+# 🛤️ 4. Les variables d'environnement
+
+Les variables d'environnement permettent d'automatiser le plus possible de déploiement des containeurs. Comme dans le cas des volumes, si on a un conteneur qui tombe, le Docker Compose ou Swarm à juste à relire le fichier *.yml pour le relancer avec exactement les mêmes paramètres.
+
+Je suis rester sur les paramètres essentiels pour le bon fonctionnement du TP :
+
+```yaml
+services:
+
+    wordpress:
+        environment:
+            WORDPRESS_DB_HOST: mysql
+            WORDPRESS_DB_USER: wp-user
+            WORDPRESS_DB_PASSWORD: wordpress
+            WORDPRESS_DB_NAME: wordpress_esgi
+
+    mysql:
+        environment:
+            MYSQL_DATABASE: wordpress_esgi
+            MYSQL_USER: wp-user
+            MYSQL_PASSWORD: wordpress
+            MYSQL_RANDOM_ROOT_PASSWORD: '1'     
+```
+
+Tout à fait, Nginx Proxy Manager vient sans variable d'environnement car son paramétrage ce fait sur l'interface web.
+
+# 5. Conclusion
 
