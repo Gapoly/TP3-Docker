@@ -40,8 +40,8 @@ services:
     restart: always
     ports:
       - 8008:80
-      - 8181:81
       - 4443:443
+      - 8181:81
     volumes:
       - nginx-data:/data
       - nginx-tls:/etc/letsencrypt
