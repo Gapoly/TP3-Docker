@@ -4,6 +4,12 @@ services:
     image: wordpress
     container_name: wordpress
     restart: always
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:80"]
+      interval: 60s
+      retries: 5
+      start_period: 20s
+      timeout: 10s
     depends_on:
       mysql:
         condition: service_healthy
@@ -45,6 +51,12 @@ services:
   nginx:
     image: jc21/nginx-proxy-manager:latest
     restart: always
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:81"]
+      interval: 60s
+      retries: 5
+      start_period: 20s
+      timeout: 10s
     ports:
       - 8008:80
       - 4443:443
