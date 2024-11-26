@@ -72,6 +72,8 @@ Pour la base de données, je suis resté sur technologie classique et connue qui
 
 Nginx Proxy Manager (NPM) est un proxy inverse doté d'une interface web pour gérer facilement les paramétrage du serveur. Il propose de configurer et d'administrer des proxys inverses, des certificats TLS, et des redirections de sites web. Cette techno rentrera parfaitement dans le rôle de frontend.
 
+L'inconvénient de ce logiciel est que le paramétrage ce fait sur l'interface web. Pour palier à ce problème, j'ai prévu une config déjà prête à utiliser. La documentation pour l'installation se trouver dans **Doc NPM.md**.
+
 <br>
 
 - **Réseau :** frontend
@@ -202,7 +204,59 @@ services:
             MYSQL_RANDOM_ROOT_PASSWORD: '1'     
 ```
 
-Tout à fait, Nginx Proxy Manager vient sans variable d'environnement car son paramétrage ce fait sur l'interface web.
+Nginx Proxy Manager vient sans variable d'environnement car son paramétrage ce fait sur l'interface web.
 
-# 5. Conclusion
+# ❤️ 5. Le healthcheck
 
+Cette étape, n'était pas obligatoire mais j'ai quand même voulu la faire. C'est quoi le healthcheck et à quoi ça sert?
+
+Le healthcheck est un module qu'on va ajouter à un ficher *.yml ou un dockerfile. On va ajouter une condition qui va nous permettre de dire si notre containeur marche de la manière qu'il est sensé marché. Par exemple, pour un wordpress, on va faire une commande curl pour être sûr que le site foncionne bien. Si le curl ressort une réponse négatif, alors notre containeur est "unhealthy".
+
+Voici les healthcheck que j'ai mis dans mon fichier *.yml :
+
+```yaml
+services:
+
+  wordpress:
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:80"]
+      interval: 60s
+      retries: 5
+      start_period: 20s
+      timeout: 10s
+    depends_on:
+      mysql:
+        condition: service_healthy
+# J'ai fais en sorte que le wordpress ne lance pas, si il MySQL à un status unhealthy
+  mysql:
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  nginx:
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:81"]
+      interval: 60s
+      retries: 5
+      start_period: 20s
+      timeout: 10s
+```
+
+# 6. Conclusion
+
+En conclusion, je fais vais faire un récapitulatif rapide des technos utilisés et comment elles ont pu répondre à la problématique imposé par l'exercice.
+
+Tout d'abord, je ne suis pas resté sur les technos de base étant donné que j'ai aucune compétence en dev. J'ai décidé de partir sur des technos en rapport avec mon spécialité, systèmes & réseaux qui sont :
+
+- **Wordpress** *( J'aurais pu remplacer par un GLPI ou un Centreon )*
+- **MySQL** *( La seule base de données que je maitrise )*
+- **Nginx Proxy Manager** *( Logiciel permettant la redirection vers le site en le gardant sécurisé )*
+
+En suite pour les problématiques :
+
+- **Les réseau** *(Créer 3 réseaux pour chaque containeur pour que le client ai seulement accès au frontend et backend)*
+- **Les volumes** *(Mettre en place des volumes pour assurer la continuité des services en cas de panne de containeur)*
+- **Les ports** *(Ouvrir les ports nécessaire au bon fonctionnement et la communication entre les containeurs et le client)*
+- **Les variables d'environnement** *(Assurer la continuité des services en automatisant le redéploiement des containeurs automatiquement)*
+- **Le healthcheck** *(Non obligatoire. Permet de vérifier le bon fonctionnement d'un containeur sans avoir besoin de se connecter directement dessus)*
