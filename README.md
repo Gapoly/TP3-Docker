@@ -72,7 +72,7 @@ Pour la base de données, je suis resté sur technologie classique et connue qui
 
 Nginx Proxy Manager (NPM) est un proxy inverse doté d'une interface web pour gérer facilement les paramétrage du serveur. Il propose de configurer et d'administrer des proxys inverses, des certificats TLS, et des redirections de sites web. Cette techno rentrera parfaitement dans le rôle de frontend.
 
-L'inconvénient de ce logiciel est que le paramétrage ce fait sur l'interface web. Pour palier à ce problème, j'ai prévu une config déjà prête à utiliser. La documentation pour l'installation se trouver dans **Doc NPM.md**.
+L'inconvénient de ce logiciel est que le paramétrage ce fait sur l'interface web. Pour palier à ce problème, j'ai prévu une config déjà prête à utiliser. La documentation pour l'installation se trouver dans **config.md**.
 
 <br>
 
