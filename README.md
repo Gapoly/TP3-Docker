@@ -227,7 +227,7 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
-# J'ai fais en sorte que le wordpress ne lance pas, si il MySQL à un status unhealthy
+# J'ai fais en sorte que le wordpress ne se lance pas, si MySQL à un status unhealthy
   mysql:
     healthcheck:
       test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
