@@ -1,0 +1,6 @@
+[26/Nov/2024:08:29:53 +0000] 400 - - http localhost-nginx-proxy-manager "-" [Client 192.168.1.88] [Length 154] [Gzip -] "-" "-"
+[26/Nov/2024:08:29:53 +0000] 400 - - http localhost-nginx-proxy-manager "-" [Client 192.168.1.88] [Length 154] [Gzip -] "-" "-"
+[26/Nov/2024:08:30:00 +0000] 400 - - http localhost-nginx-proxy-manager "-" [Client 192.168.1.88] [Length 154] [Gzip -] "-" "-"
+[26/Nov/2024:08:30:00 +0000] 400 - - http localhost-nginx-proxy-manager "-" [Client 192.168.1.88] [Length 154] [Gzip -] "-" "-"
+[26/Nov/2024:11:18:10 +0000] 400 - - http localhost-nginx-proxy-manager "-" [Client 192.168.1.88] [Length 154] [Gzip -] "-" "-"
+[26/Nov/2024:11:18:11 +0000] 400 - - http localhost-nginx-proxy-manager "-" [Client 192.168.1.88] [Length 154] [Gzip -] "-" "-"

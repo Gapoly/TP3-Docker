@@ -1,0 +1,4 @@
+[26/Nov/2024:08:30:02 +0000] - 302 302 - GET http www.tp3.lan "/" [Client 192.168.1.88] [Length 0] [Gzip -] [Sent-to 192.168.1.205] "Mozilla/5.0 (X11; Linux x86_64; rv:132.0) Gecko/20100101 Firefox/132.0" "-"
+[26/Nov/2024:08:34:44 +0000] - 301 301 - GET http www.tp3.lan "/" [Client 192.168.1.88] [Length 0] [Gzip -] [Sent-to 192.168.1.205] "Mozilla/5.0 (X11; Linux x86_64; rv:132.0) Gecko/20100101 Firefox/132.0" "-"
+[26/Nov/2024:08:36:07 +0000] - 502, 502 502 - GET http www.tp3.lan "/" [Client 192.168.1.88] [Length 154] [Gzip -] [Sent-to localhost] "Mozilla/5.0 (X11; Linux x86_64; rv:132.0) Gecko/20100101 Firefox/132.0" "-"
+[26/Nov/2024:08:36:19 +0000] - 502, 502 502 - GET http www.tp3.lan "/" [Client 192.168.1.88] [Length 154] [Gzip -] [Sent-to localhost] "Mozilla/5.0 (X11; Linux x86_64; rv:132.0) Gecko/20100101 Firefox/132.0" "-"
